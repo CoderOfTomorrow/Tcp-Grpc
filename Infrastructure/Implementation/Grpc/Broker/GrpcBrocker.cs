@@ -40,16 +40,9 @@ namespace Infrastructure.Implementation.Grpc.Broker
 
                     foreach (var connection in grpcConnections)
                     {
-                        try
-                        {
-                            var client = new grpcNotifier.grpcNotifierClient(connection.Channel);
-                            var request = new NotifyRequest() { Content = message.Content };
-                            var replay = client.Notify(request);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
+                        var client = new grpcNotifier.grpcNotifierClient(connection.Channel);
+                        var request = new NotifyRequest() { Content = message.Content };
+                        client.Notify(request, cancellationToken: cancellationToken);
                     }
                 }
             }
