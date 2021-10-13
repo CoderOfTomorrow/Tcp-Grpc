@@ -16,12 +16,14 @@ namespace Infrastructure.Implementation.Tcp.Broker
         private const int CONNECTIONS_LIMIT = 8;
         private readonly Socket socket;
         private readonly MessageStorage messageStorage;
+        private readonly MessageStorage lostStorage;
         private readonly ConnectionStorage connectionStorage;
         public TcpBrocker(MessageStorage messageStorage, ConnectionStorage connectionStorage)
         {
             this.messageStorage = messageStorage;
             this.connectionStorage = connectionStorage;
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            lostStorage = new();
         }
 
         public void Start(string ip, int port)
@@ -103,15 +105,24 @@ namespace Infrastructure.Implementation.Tcp.Broker
                 {
                     var connections = connectionStorage.GetConnectionInfosByTopic(payload.Topic);
                     var tcpConnections = connections.OfType<TcpConnection>();
-                    
+                    bool messageStatus = false;
                     foreach (var connection in tcpConnections)
                     {
+                        if (connection.Topic == payload.Topic)
+                            messageStatus = true;
                         var payloadString = JsonSerializer.Serialize(payload);
                         byte[] data = Encoding.UTF8.GetBytes(payloadString);
 
                         connection.Socket.Send(data);
                     }
+                    if (!messageStatus)
+                        lostStorage.Add(payload);
                 }
+            }
+            for(var i = 0; i<lostStorage.Count(); i++)
+            {
+                var payload = lostStorage.GetNext();
+                messageStorage.Add(payload);
             }
             await Task.Delay(500, cancellationToken);
         }

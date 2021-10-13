@@ -15,8 +15,8 @@ namespace Broker
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    //services.AddTcpInfrastructure();
-                    services.AddGrpcInfrastructure();
+                    services.AddTcpInfrastructure();
+                    //services.AddGrpcInfrastructure();
                     services.AddHostedService<Worker>();
                 });
     }

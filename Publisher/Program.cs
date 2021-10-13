@@ -36,8 +36,8 @@ namespace Publisher
         static ServiceProvider ResolveDependencies()
         {
             return new ServiceCollection()
-            //.AddSingleton<IPublisher, TcpPublisher>()        
-            .AddSingleton<IPublisher, GrpcPublisher>() 
+            .AddSingleton<IPublisher, TcpPublisher>()        
+            //.AddSingleton<IPublisher, GrpcPublisher>() 
             .BuildServiceProvider();
         }
     }

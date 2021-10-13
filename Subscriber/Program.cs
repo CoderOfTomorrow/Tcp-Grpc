@@ -14,7 +14,6 @@ namespace Subscriber
             Console.WriteLine("Subscriber...");
 
             var subscriber = ResolveDependencies().GetService<ISubscriber>();
-
             Console.Write("Topic: ");
             subscriber.Topic = Console.ReadLine().ToLower();
 
@@ -26,8 +25,8 @@ namespace Subscriber
         static ServiceProvider ResolveDependencies()
         {
             return new ServiceCollection()
-            //.AddSingleton<ISubscriber, TcpSubscriber>()      
-            .AddSingleton<ISubscriber, GrpcSubscriber>()
+            .AddSingleton<ISubscriber, TcpSubscriber>()      
+            //.AddSingleton<ISubscriber, GrpcSubscriber>()
             .BuildServiceProvider();
         }
     }

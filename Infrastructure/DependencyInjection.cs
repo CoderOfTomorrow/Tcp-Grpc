@@ -14,7 +14,6 @@ namespace Infrastructure
             services.AddSingleton<IBrocker, TcpBrocker>();
             services.AddSingleton<MessageStorage>();
             services.AddSingleton<ConnectionStorage>();
-            //services.AddSingleton<IConnection, TcpConnection>();
             return services;
         }
 
